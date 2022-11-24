@@ -608,6 +608,45 @@ RSpec.describe ApplicationHelper do
         expect(helper.crawlable_meta_data).not_to include("twitter:image")
       end
     end
+
+    context "with breadcrumbs" do
+      subject(:metadata) { helper.crawlable_meta_data(breadcrumbs: breadcrumbs) }
+
+      let(:breadcrumbs) do
+        [
+          { name: "section1", color: "ff0000" },
+          { name: "section2", color: "0000ff" }
+        ]
+      end
+      let(:tags) do
+        <<~HTML.strip
+        <meta property="og:article:section" content="section1" />
+        <meta property="og:article:section:color" content="ff0000" />
+        <meta property="og:article:section" content="section2" />
+        <meta property="og:article:section:color" content="0000ff" />
+        HTML
+      end
+
+      it "generates section and color tags" do
+        expect(metadata).to include tags
+      end
+    end
+
+    context "with tags" do
+      subject(:metadata) { helper.crawlable_meta_data(tags: tags) }
+
+      let(:tags) { %w[tag1 tag2] }
+      let(:output_tags) do
+        <<~HTML.strip
+        <meta property="og:article:tag" content="tag1" />
+        <meta property="og:article:tag" content="tag2" />
+        HTML
+      end
+
+      it "generates tag tags" do
+        expect(metadata).to include output_tags
+      end
+    end
   end
 
   describe 'discourse_color_scheme_stylesheets' do

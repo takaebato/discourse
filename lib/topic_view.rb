@@ -692,6 +692,10 @@ class TopicView
     @mentioned_users = mentioned_users.to_h { |u| [u.username, u] }
   end
 
+  def tags
+    @topic.tags.map(&:name)
+  end
+
   protected
 
   def read_posts_set

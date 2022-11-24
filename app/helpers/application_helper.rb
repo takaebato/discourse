@@ -309,6 +309,13 @@ module ApplicationHelper
         result << tag(:meta, { name: "twitter:#{property}", content: content }, nil, true)
       end
     end
+    Array.wrap(opts[:breadcrumbs]).each do |breadcrumb|
+      result << tag(:meta, property: "og:article:section", content: breadcrumb[:name])
+      result << tag(:meta, property: "og:article:section:color", content: breadcrumb[:color])
+    end
+    Array.wrap(opts[:tags]).each do |tag_name|
+      result << tag(:meta, property: "og:article:tag", content: tag_name)
+    end
 
     if opts[:read_time] && opts[:read_time] > 0 && opts[:like_count] && opts[:like_count] > 0
       result << tag(:meta, name: 'twitter:label1', value: I18n.t("reading_time"))

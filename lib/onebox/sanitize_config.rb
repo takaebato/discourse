@@ -5,7 +5,7 @@ module Onebox
     HTTP_PROTOCOLS ||= ['http', 'https', :relative].freeze
 
     ONEBOX ||= Sanitize::Config.freeze_config(Sanitize::Config.merge(Sanitize::Config::RELAXED,
-      elements: Sanitize::Config::RELAXED[:elements] + %w[audio details embed iframe source video svg path],
+      elements: Sanitize::Config::RELAXED[:elements] + %w[audio details embed iframe source video svg path use],
 
       attributes: {
         'a' => Sanitize::Config::RELAXED[:attributes]['a'] + %w(target),
@@ -18,6 +18,7 @@ module Onebox
         'svg' => ['aria-hidden', 'width', 'height', 'viewbox'],
         'div' => [:data], # any data-* attributes,
         'span' => [:data], # any data-* attributes
+        'use' => %w[href]
       },
 
       add_attributes: {
