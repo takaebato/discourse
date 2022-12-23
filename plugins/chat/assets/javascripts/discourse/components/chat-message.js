@@ -99,8 +99,6 @@ export default Component.extend({
       this,
       "_handleReactionMessage"
     );
-
-    cancel(this._invitationSentTimer);
   },
 
   didReceiveAttrs() {
@@ -445,73 +443,14 @@ export default Component.extend({
     return Object.values(reactions).some((r) => r.count > 0);
   },
 
-  @discourseComputed("message.mentionWarning")
-  mentionWarning() {
-    return this.message.mentionWarning;
-  },
-
-  @discourseComputed("mentionWarning.cannot_see")
-  mentionedCannotSeeText(users) {
-    return I18n.t("chat.mention_warning.cannot_see", {
-      username: users[0].username,
-      count: users.length,
-      others: this._othersTranslation(users.length - 1),
-    });
-  },
-
-  @discourseComputed("mentionWarning.without_membership")
-  mentionedWithoutMembershipText(users) {
-    return I18n.t("chat.mention_warning.without_membership", {
-      username: users[0].username,
-      count: users.length,
-      others: this._othersTranslation(users.length - 1),
-    });
-  },
-
-  @discourseComputed("mentionWarning.group_mentions_disabled")
-  groupsWithDisabledMentions(groups) {
-    return I18n.t("chat.mention_warning.group_mentions_disabled", {
-      group_name: groups[0],
-      count: groups.length,
-      others: this._othersTranslation(groups.length - 1),
-    });
-  },
-
-  @discourseComputed("mentionWarning.groups_with_too_many_members")
-  groupsWithTooManyMembers(groups) {
-    return I18n.t("chat.mention_warning.too_many_members", {
-      group_name: groups[0],
-      count: groups.length,
-      others: this._othersTranslation(groups.length - 1),
-    });
-  },
-
-  _othersTranslation(othersCount) {
-    return I18n.t("chat.mention_warning.warning_multiple", {
-      count: othersCount,
-    });
+  @discourseComputed("message.mentionWarnings")
+  mentionWarnings() {
+    return this.message.mentionWarnings;
   },
 
   @action
-  inviteMentioned() {
-    const user_ids = this.mentionWarning.without_membership.mapBy("id");
-
-    ajax(`/chat/${this.details.chat_channel_id}/invite`, {
-      method: "PUT",
-      data: { user_ids, chat_message_id: this.message.id },
-    }).then(() => {
-      this.message.set("mentionWarning.invitationSent", true);
-      this._invitationSentTimer = discourseLater(() => {
-        this.message.set("mentionWarning", null);
-      }, 3000);
-    });
-
-    return false;
-  },
-
-  @action
-  dismissMentionWarning() {
-    this.message.set("mentionWarning", null);
+  dismissMentionWarnings() {
+    this.message.set("mentionWarnings", null);
   },
 
   @action
