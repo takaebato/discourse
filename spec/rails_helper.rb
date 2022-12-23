@@ -408,8 +408,13 @@ RSpec.configure do |config|
 
         if !skip_js_errors
           lines << "~~~~~~~ JS LOGS ~~~~~~~"
-          page.driver.browser.logs.get(:browser).each do |log|
-            lines << log.message
+          logs = page.driver.browser.logs.get(:browser)
+          if logs.empty?
+            lines << "(no logs)"
+          else
+            logs.each do |log|
+              lines << log.message
+            end
           end
           lines << "~~~~~ END JS LOGS ~~~~~"
         end
